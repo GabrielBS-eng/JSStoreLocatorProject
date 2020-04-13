@@ -24,6 +24,21 @@ function initMap() {
     });
     infoWindow = new google.maps.InfoWindow();
     showStoresMarkers();
+    setOnClickListener();  
+//    google.maps.event.trigger(markers[0], 'click');
+}
+
+function searchStores() {
+    console.log("searching");
+}
+
+function setOnClickListener() {
+    var storeElements = document.querySelectorAll('.store-container');
+    storeElements.forEach(function (elem, index){
+        elem.addEventListener('click', function (){
+             google.maps.event.trigger(markers[index], 'click');
+        })  
+    })
 }
 
 function displayStores() {
@@ -69,15 +84,41 @@ function showStoresMarkers() {
 
         var name = store["name"];
         var address = store["addressLines"][0];
+        var openStatusText = store["openStatusText"];
+        var phoneNumber = store["phoneNumber"];
+
         bounds.extend(latlng);
-        createMarker(latlng, name, address, ++index)
+        createMarker(latlng, name, address, openStatusText, phoneNumber, ++index)
     }
     map.fitBounds(bounds);
 
 }
 
-function createMarker(latlng, name, address, index) {
-    var html = "<b>" + name + "</b> <br/>" + address;
+function createMarker(latlng, name, address, openStatusText, phoneNumber, index) {
+    var html = `
+        <div class="store-info-window">
+            <div class="store-info-name">
+                ${name}
+            </div>
+            <div class="store-info-status">
+                ${openStatusText}
+            </div>
+            <div class="store-info-address">
+                <div class="circle">
+                    <i class="fas fa-location-arrow"></i>
+                </div>
+                ${address}
+            </div>
+            <div class="store-info-phone">
+                <div class="circle">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                ${phoneNumber}
+            </div>
+        </div>
+    `;
+
+     //   "<b>" + name + "</b> <br/>" + address;
     var marker = new google.maps.Marker({
         map: map,
         position: latlng,
