@@ -1,5 +1,4 @@
 window.onload = () => {
-    displayStores();
 }
 
 var map;
@@ -23,13 +22,37 @@ function initMap() {
         mapTypeId: 'roadmap',
     });
     infoWindow = new google.maps.InfoWindow();
-    showStoresMarkers();
-    setOnClickListener();  
+//    showStoresMarkers();
+//    setOnClickListener();  
 //    google.maps.event.trigger(markers[0], 'click');
+    searchStores();
 }
 
 function searchStores() {
-    console.log("searching");
+    var foundStores = [];
+    var zipCode = document.getElementById('zip-code-input').value;
+    if (zipCode) {
+        for (var store of stores) {
+            var postal = store['address']['postalCode'].substring(0, 5);
+            if (postal == zipCode) {
+                foundStores.push(store);
+            }
+        }
+    } else {
+        foundStores = stores;
+    } 
+
+    displayStores(foundStores);
+    showStoresMarkers(foundStores);
+    setOnClickListener();
+}
+
+function clearLocations() {
+    infoWindow.close();
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(NULL);
+    }
+    markers.length = 0;
 }
 
 function setOnClickListener() {
@@ -41,7 +64,7 @@ function setOnClickListener() {
     })
 }
 
-function displayStores() {
+function displayStores(stores) {
     //stores.map(function(store,index))
 
     var storesHtml = '';
@@ -52,20 +75,20 @@ function displayStores() {
 
         storesHtml += ` 
             <div class="store-container">
-                    <div class="store-info-container">
-
-                        <div class="store-address">
-                            <span>${address[0]}</span>
-                            <span>${address[1]}</span>
+                    <div class="store-container-background">
+                        <div class="store-info-container">
+                            <div class="store-address">
+                                <span>${address[0]}</span>
+                                <span>${address[1]}</span>
+                            </div>
+                            <div class="store-phone-number">${phone}</div>
                         </div>
-                        <div class="store-phone-number">${phone}</div>
-                    </div>
-                    <div class="store-number-container">
-                        <div class="store-number">
-                            ${++index}
+                        <div class="store-number-container">
+                            <div class="store-number">
+                                ${++index}
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         `
@@ -74,7 +97,7 @@ function displayStores() {
     }
 }
 
-function showStoresMarkers() {
+function showStoresMarkers(stores) {
     var bounds = new google.maps.LatLngBounds();
     for (var [index, store] of stores.entries()) {
 

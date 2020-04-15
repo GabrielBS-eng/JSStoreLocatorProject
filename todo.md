@@ -32,8 +32,8 @@ Last day
 
 - Open the info window marker on store selection in stores list DONE
 
-- Allow the user to search for the stores in a zip code
+- Allow the user to search for the stores in a zip code DONE
 
-- Add a beautiful transition on the hover of an individual store
+- Add a beautiful transition on the hover of an individual store DONE
 
 **DONE**
